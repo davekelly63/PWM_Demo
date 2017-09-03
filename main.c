@@ -76,6 +76,7 @@ void main(void)
         // Read the pot
        
        adc_result_t reading = ADC_GetConversion (channel_ANC7);
+       // ADC result is 16 bit, but PWM duty requires up to 10 bit. Shift result 6 bits
        uint16_t pwmValue = reading >> 6;
        
        PWM5_LoadDutyValue (pwmValue);
