@@ -71,6 +71,8 @@ void main(void)
 
     printf ("PWM Demo. (c) DKSS 2017\r");
     
+    uint16_t lastPWMValue = 0;
+    
     while (1)
     {
         // Read the pot
@@ -79,7 +81,26 @@ void main(void)
        // ADC result is 16 bit, but PWM duty requires up to 10 bit. Shift result 6 bits
        uint16_t pwmValue = reading >> 6;
        
-       PWM5_LoadDutyValue (pwmValue);
+       //printf ("%X %X\r", reading, pwmValue);
+
+
+       // PWM frequency is 31 kHz (31 us). Only update duty if value changed, else it can reset
+       // the timer
+       
+       // There is a standard function abs, but it only works with 8 bit integers
+       
+       int16_t difference = pwmValue - lastPWMValue;
+       
+       if (difference < 0)
+       {
+          difference = -difference;
+       }
+       
+       if (difference > 10)
+       {
+          PWM5_LoadDutyValue (pwmValue);
+       }
+
        __delay_ms (10);
        
     }
